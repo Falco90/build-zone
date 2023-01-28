@@ -1,71 +1,233 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { ethers } from "ethers";
+import lighthouse from "@lighthouse-web3/sdk";
+import Web3Modal from "web3modal";
+import { useState } from "react";
+import Admin from "../components/admin";
 
 export default function Home() {
+  const [fileURL, setFileURL] = useState<string>("");
+  const [encryptedCID, setEncryptedCID] = useState("");
+  const [CID, setCID] = useState<string>("");
+
+  const deploy = async (e: any) => {
+    // Push file to lighthouse node
+    const output = await lighthouse.upload(
+      e,
+      process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY,
+      progressCallback
+    );
+    console.log("File Status:", output);
+    /*
+      output:
+        {
+          Name: "filename.txt",
+          Size: 88000,
+          Hash: "QmWNmn2gr4ZihNPqaC5oTeePsHvFtkWNpjY3cD6Fd5am1w"
+        }
+      Note: Hash in response is CID.
+    */
+
+    console.log(
+      "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
+    );
+    setCID(output.data.Hash);
+  };
+
+  const sign_auth_message = async () => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const publicKey = (await signer.getAddress()).toLowerCase();
+    const messageRequested = (await lighthouse.getAuthMessage(publicKey)).data
+      .message;
+    const signedMessage = await signer.signMessage(messageRequested);
+    return { publicKey: publicKey, signedMessage: signedMessage };
+  };
+
+  const applyAccessConditions = async () => {
+    const cid = encryptedCID;
+
+    // Conditions to add
+    const conditions = [
+      {
+        id: 1,
+        chain: "Hyperspace",
+        method: "get",
+        standardContractType: "Custom",
+        contractAddress: "0xa27bC320252d51EEAA24BCCF6cc003979E485860",
+        returnValueTest: {
+          comparator: "==",
+          value: "1",
+        },
+        parameters: [":userAddress"],
+        inputArrayType: ["address"],
+        outputType: "uint256",
+      },
+    ];
+
+    const aggregator = "([1])";
+    const { publicKey, signedMessage } = await encryptionSignature();
+
+    /*
+      accessCondition(publicKey, cid, signedMessage, conditions, aggregator)
+        Parameters:
+          publicKey: owners public key
+          CID: CID of file to decrypt
+          signedMessage: message signed by owner of publicKey
+          conditions: should be in format like above
+          aggregator: aggregator to apply on conditions
+    */
+    const response = await lighthouse.accessCondition(
+      publicKey,
+      cid,
+      signedMessage,
+      conditions,
+      aggregator
+    );
+    console.log(response);
+  };
+
+  /* Decrypt file */
+  const decrypt = async () => {
+    // Fetch file encryption key
+    const cid = encryptedCID; //replace with your IPFS CID
+    console.log("Encrypted CID: ", encryptedCID);
+    const { publicKey, signedMessage } = await sign_auth_message();
+    console.log(signedMessage);
+    /*
+      fetchEncryptionKey(cid, publicKey, signedMessage)
+        Parameters:
+          CID: CID of the file to decrypt
+          publicKey: public key of the user who has access to file or owner
+          signedMessage: message signed by the owner of publicKey
+    */
+    const keyObject = await lighthouse.fetchEncryptionKey(
+      cid,
+      publicKey,
+      signedMessage
+    );
+
+    // Decrypt file
+    /*
+      decryptFile(cid, key, mimeType)
+        Parameters:
+          CID: CID of the file to decrypt
+          key: the key to decrypt the file
+          mimeType: default null, mime type of file
+    */
+
+    const fileType = "image/jpeg";
+    const decrypted = await lighthouse.decryptFile(
+      cid,
+      keyObject.data.key,
+      fileType
+    );
+    console.log(decrypted);
+    /*
+      Response: blob
+    */
+
+    // View File
+    const url = URL.createObjectURL(decrypted);
+    console.log(url);
+    setFileURL(url);
+  };
+
+  const encryptionSignature = async () => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    const messageRequested = (await lighthouse.getAuthMessage(address)).data
+      .message;
+    const signedMessage = await signer.signMessage(messageRequested);
+    return {
+      signedMessage: signedMessage,
+      publicKey: address,
+    };
+  };
+
+  const progressCallback = (progressData) => {
+    let percentageDone =
+      100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
+    console.log(percentageDone);
+  };
+
+  /* Deploy file along with encryption */
+  const deployEncrypted = async (e: any) => {
+    console.log(process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY);
+    /*
+       uploadEncrypted(e, publicKey, accessToken, uploadProgressCallback)
+       - e: js event
+       - publicKey: wallets public key
+       - accessToken: your api key
+       - signedMessage: message signed by the owner of publicKey
+       - uploadProgressCallback: function to get progress (optional)
+    */
+    const sig = await encryptionSignature();
+    const response = await lighthouse.uploadEncrypted(
+      e,
+      sig.publicKey,
+      process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY!,
+      sig.signedMessage,
+      progressCallback
+    );
+    console.log(response);
+    setEncryptedCID(response.data.Hash);
+    /*
+      output:
+        {
+          Name: "c04b017b6b9d1c189e15e6559aeb3ca8.png",
+          Size: "318557",
+          Hash: "QmcuuAtmYqbPYmPx3vhJvPDi61zMxYvJbfENMjBQjq7aM3"
+        }
+      Note: Hash in response is CID.
+    */
+  };
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="container flex flex-col p-6">
+      <h1 className="text-3xl">Safe Build Zone</h1>
+      <div>
+        <p>Upload encrypted file</p>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <input onChange={(e) => deployEncrypted(e)} type="file" />
+      </div>
+      <div>
+        <p>Upload normal file</p>
+        {CID}
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
+        <input onChange={(e) => deploy(e)} type="file" />
+      </div>
+      <div>
+        <ul>
+          <li className="flex flex-row gap-5">
+            <p>File</p> <button onClick={() => decrypt()}>View File</button>
+          </li>
+          <li className="flex flex-row gap-5">
+            <p>File</p> <button onClick={() => decrypt()}>View File</button>
+          </li>
+          <li className="flex flex-row gap-5">
+            <p>File</p> <button onClick={() => decrypt()}>View File</button>
+          </li>
+          <li className="flex flex-row gap-5">
+            <p>File</p> <button onClick={() => decrypt()}>View File</button>
+          </li>
+        </ul>
+      </div>
+      <button onClick={() => decrypt()}>decrypt</button>
+      <button onClick={() => applyAccessConditions()}>
+        Apply Access Control
+      </button>
+      {fileURL ? (
+        <a href={fileURL} target="_blank">
+          viewFile
         </a>
-      </footer>
+      ) : null}
+      <Admin />
     </div>
-  )
+  );
 }
