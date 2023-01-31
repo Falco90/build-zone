@@ -32,13 +32,12 @@ const Upload = () => {
     };
   };
 
-  const progressCallback = (progressData: any) => {
-    let percentageDone =
-      100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
-    console.log(percentageDone);
-  };
+//   const progressCallback = (progressData: any) => {
+//     let percentageDone =
+//       100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
+//     console.log(percentageDone);
+//   };
 
-  /* Deploy file along with encryption */
   const deployEncrypted = async (e: any) => {
     console.log(process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY);
     const sig = await encryptionSignature();
@@ -47,7 +46,7 @@ const Upload = () => {
       sig.publicKey,
       process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY!,
       sig.signedMessage,
-      progressCallback
+    //   progressCallback
     );
     console.log(response);
     applyAccessConditions(response.data.Hash);
@@ -55,7 +54,6 @@ const Upload = () => {
   };
 
   const applyAccessConditions = async (cid: string) => {
-    // Conditions to add
     const conditions = [
       {
         id: 1,

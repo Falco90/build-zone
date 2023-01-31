@@ -117,7 +117,7 @@ const Files = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-5 w-[750px]">
+    <div className="bg-gray-100 p-5 w-[750px] rounded-xl">
       <div className="flex flex-row w-full justify-between p-2 items-center mb-4">
         <p className="font-bold">Files:</p>
         <button className="rounded p-2 bg-orange-200 text-sm">Add file</button>

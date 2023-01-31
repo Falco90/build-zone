@@ -70,7 +70,7 @@ const Members = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-5">
+    <div className="bg-gray-100 p-5 rounded-xl">
       <div className="flex flex-row gap-4">
         <h3 className="text-sm">Members:</h3>
         <input
