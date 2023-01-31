@@ -4,18 +4,31 @@ import contractABI from "../abis/contractABI.json";
 import { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 
+type File = {
+  cid: string;
+  url: string;
+};
+
 const Files = () => {
-  const [cids, setCids] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const contractAddress = "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0";
-  const getFiles = async () => {
+  const getCids = async () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
-    const response = await contract.getFiles();
-    setCids(response);
+    const cids = await contract.getFiles();
+    console.log(cids);
+    const newFiles = cids.map((cid: string) => {
+      return {
+        cid: cid,
+        url: "",
+      };
+    });
+    setFiles(newFiles);
+    console.log(files);
   };
 
   const sign_auth_message = async () => {
@@ -31,7 +44,7 @@ const Files = () => {
     return { publicKey: publicKey, signedMessage: signedMessage };
   };
 
-  const decrypt = async (cid: string) => {
+  const decrypt = async (cid: string, index: number) => {
     // Fetch file encryption key
     const { publicKey, signedMessage } = await sign_auth_message();
     console.log(signedMessage);
@@ -71,11 +84,16 @@ const Files = () => {
     // View File
     const url = URL.createObjectURL(decrypted);
     console.log(url);
+    const newFiles: File[] = [...files];
+    newFiles[index].url = url;
+    setFiles(newFiles);
+    console.log(files);
+
     // setFileURL(url);
   };
 
   const removeFile = async (index: number) => {
-    console.log(index)
+    console.log(index);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -86,26 +104,34 @@ const Files = () => {
   };
 
   useEffect(() => {
-    getFiles();
+    getCids();
   }, []);
 
   const renderList = () => {
     return (
       <ul className="w-[600px]">
-        {cids.map((cid, index) => {
+        {files.map((file, index) => {
           return (
             <li
               className="bg-white my-1 flex flex-row gap-2 p-2 items-center"
-              key={cid}
+              key={index}
             >
-              <p className="px-2">{cid}</p>
+              <p className="px-2">{file.cid}</p>
               <button
                 className="bg-purple-300 rounded p-2"
-                onClick={() => decrypt(cid)}
+                onClick={() => decrypt(file.cid, index)}
               >
                 Decrypt
               </button>
-              <button className="bg-orange-300 rounded p-2" onClick={() => removeFile(index)}>Remove</button>
+              <a href={file.url} target="_blank">
+                <button className="bg-pink-300 rounded p-2" disabled={!file.url ? true : false}>View</button>
+              </a>
+              <button
+                className="bg-orange-300 rounded p-2"
+                onClick={() => removeFile(index)}
+              >
+                Remove
+              </button>
             </li>
           );
         })}
