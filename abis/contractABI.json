@@ -22,11 +22,11 @@
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "file",
+				"name": "_cid",
 				"type": "string"
 			}
 		],
-		"name": "addFile",
+		"name": "addCid",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -57,7 +57,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "files",
+		"name": "cids",
 		"outputs": [
 			{
 				"internalType": "string",
@@ -140,7 +140,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "removeFile",
+		"name": "removeCid",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

@@ -3,11 +3,14 @@ import lighthouse from "@lighthouse-web3/sdk";
 import Web3Modal from "web3modal";
 import { useState } from "react";
 import Admin from "../components/admin";
+import Files from "../components/files";
+import contractABI from "../abis/contractABI.json";
 
 export default function Home() {
   const [fileURL, setFileURL] = useState<string>("");
   const [encryptedCID, setEncryptedCID] = useState("");
   const [CID, setCID] = useState<string>("");
+  const contractAddress = "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0";
 
   const deploy = async (e: any) => {
     // Push file to lighthouse node
@@ -56,7 +59,7 @@ export default function Home() {
         chain: "Hyperspace",
         method: "get",
         standardContractType: "Custom",
-        contractAddress: "0xa27bC320252d51EEAA24BCCF6cc003979E485860",
+        contractAddress: "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0",
         returnValueTest: {
           comparator: "==",
           value: "1",
@@ -95,7 +98,7 @@ export default function Home() {
     const cid = encryptedCID; //replace with your IPFS CID
     console.log("Encrypted CID: ", encryptedCID);
     const { publicKey, signedMessage } = await sign_auth_message();
-    console.log(signedMessage);
+    console.log("public key: ", publicKey, "signed message: ", signedMessage);
     /*
       fetchEncryptionKey(cid, publicKey, signedMessage)
         Parameters:
@@ -177,6 +180,7 @@ export default function Home() {
     );
     console.log(response);
     setEncryptedCID(response.data.Hash);
+    addFile(response.data.Hash);
     /*
       output:
         {
@@ -188,46 +192,63 @@ export default function Home() {
     */
   };
 
-  return (
-    <div className="container flex flex-col p-6">
-      <h1 className="text-3xl">Safe Build Zone</h1>
-      <div>
-        <p>Upload encrypted file</p>
+  const addFile = async (cid: string) => {
+    console.log(cid);
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    const response = await contract.addCid(cid);
+    console.log(response);
+  };
 
-        <input onChange={(e) => deployEncrypted(e)} type="file" />
+  return (
+    <div className="flex flex-col items-center bg-gray-200">
+      <h1 className="text-3xl">Safe Build Zone</h1>
+      <div className="bg-gray-100 p-5">
+        {/* <p>Upload encrypted file</p> */}
+
+        <input
+          className="form-control
+          block
+          w-full
+          px-3
+          py-1.5
+          text-base
+          font-normal
+          text-gray-700
+          bg-white bg-clip-padding
+          border border-solid border-gray-300
+          rounded
+          transition
+          ease-in-out
+          m-0
+          focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+          onChange={(e) => deployEncrypted(e)}
+          type="file"
+        />
+        <button
+          className="bg-yellow-100 rounded p-2"
+          onClick={() => applyAccessConditions()}
+        >
+          Apply Access Control
+        </button>
       </div>
-      <div>
+      {/* <div>
         <p>Upload normal file</p>
         {CID}
 
         <input onChange={(e) => deploy(e)} type="file" />
-      </div>
-      <div>
-        <ul>
-          <li className="flex flex-row gap-5">
-            <p>File</p> <button onClick={() => decrypt()}>View File</button>
-          </li>
-          <li className="flex flex-row gap-5">
-            <p>File</p> <button onClick={() => decrypt()}>View File</button>
-          </li>
-          <li className="flex flex-row gap-5">
-            <p>File</p> <button onClick={() => decrypt()}>View File</button>
-          </li>
-          <li className="flex flex-row gap-5">
-            <p>File</p> <button onClick={() => decrypt()}>View File</button>
-          </li>
-        </ul>
-      </div>
+      </div> */}
       <button onClick={() => decrypt()}>decrypt</button>
-      <button onClick={() => applyAccessConditions()}>
-        Apply Access Control
-      </button>
       {fileURL ? (
         <a href={fileURL} target="_blank">
           viewFile
         </a>
       ) : null}
       <Admin />
+      <Files />
     </div>
   );
 }
