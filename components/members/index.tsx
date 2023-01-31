@@ -46,10 +46,13 @@ const Members = () => {
   const renderMembers = () => {
     return (
       <ul>
-        {members!.map((member) => {
+        {members!.map((member, index) => {
           return (
             <div>
-              <li className="flex flex-row gap-2 items-center my-2">
+              <li
+                key={index}
+                className="flex flex-row gap-2 items-center my-2"
+              >
                 <p>{member}</p>
                 <button
                   className="bg-red-300 rounded p-2 text-sm"
