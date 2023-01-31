@@ -5,12 +5,13 @@ import { useState } from "react";
 import Admin from "../components/admin";
 import Files from "../components/files";
 import contractABI from "../abis/contractABI.json";
+import Members from "../components/members";
+import { contractAddress } from "../config";
 
 export default function Home() {
   const [fileURL, setFileURL] = useState<string>("");
   const [encryptedCID, setEncryptedCID] = useState("");
   const [CID, setCID] = useState<string>("");
-  const contractAddress = "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0";
 
   const deploy = async (e: any) => {
     // Push file to lighthouse node
@@ -249,6 +250,7 @@ export default function Home() {
       ) : null}
       <Admin />
       <Files />
+      <Members />
     </div>
   );
 }

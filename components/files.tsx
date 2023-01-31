@@ -3,6 +3,7 @@ import Web3Modal from "web3modal";
 import contractABI from "../abis/contractABI.json";
 import { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
+import { contractAddress } from "../config";
 
 type File = {
   cid: string;
@@ -12,7 +13,7 @@ type File = {
 const Files = () => {
   const [files, setFiles] = useState<File[]>([]);
 
-  const contractAddress = "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0";
+  // const contractAddress = "0x42AD3aE0B79Fa253ab732eba8FCF38864Ad4abf0";
   const getCids = async () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -20,7 +21,6 @@ const Files = () => {
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
     const cids = await contract.getFiles();
-    console.log(cids);
     const newFiles = cids.map((cid: string) => {
       return {
         cid: cid,
@@ -28,7 +28,6 @@ const Files = () => {
       };
     });
     setFiles(newFiles);
-    console.log(files);
   };
 
   const sign_auth_message = async () => {
@@ -124,7 +123,12 @@ const Files = () => {
                 Decrypt
               </button>
               <a href={file.url} target="_blank">
-                <button className="bg-pink-300 rounded p-2" disabled={!file.url ? true : false}>View</button>
+                <button
+                  className="bg-pink-300 rounded p-2"
+                  disabled={!file.url ? true : false}
+                >
+                  View
+                </button>
               </a>
               <button
                 className="bg-orange-300 rounded p-2"
