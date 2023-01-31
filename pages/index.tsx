@@ -2,10 +2,9 @@ import { ethers } from "ethers";
 import lighthouse from "@lighthouse-web3/sdk";
 import Web3Modal from "web3modal";
 import { useState } from "react";
-import Admin from "../components/admin";
 import Files from "../components/files";
-import contractABI from "../abis/contractABI.json";
 import Members from "../components/members";
+import contractABI from "../abis/contractABI.json";
 import { contractAddress } from "../config";
 
 export default function Home() {
@@ -236,21 +235,10 @@ export default function Home() {
           Apply Access Control
         </button>
       </div>
-      {/* <div>
-        <p>Upload normal file</p>
-        {CID}
-
-        <input onChange={(e) => deploy(e)} type="file" />
-      </div> */}
-      <button onClick={() => decrypt()}>decrypt</button>
-      {fileURL ? (
-        <a href={fileURL} target="_blank">
-          viewFile
-        </a>
-      ) : null}
-      <Admin />
-      <Files />
-      <Members />
+      <div className="flex flex-row gap-10">
+        <Files />
+        <Members />
+      </div>
     </div>
   );
 }

@@ -48,15 +48,18 @@ const Members = () => {
       <ul>
         {members!.map((member) => {
           return (
-            <li className="flex flex-row gap-2 items-center">
-              <p>{member}</p>
-              <button
-                className="bg-red-300 rounded p-2"
-                onClick={() => removeMember(member)}
-              >
-                Remove Member
-              </button>
-            </li>
+            <div>
+              <li className="flex flex-row gap-2 items-center my-2">
+                <p>{member}</p>
+                <button
+                  className="bg-red-300 rounded p-2 text-sm"
+                  onClick={() => removeMember(member)}
+                >
+                  Remove
+                </button>
+              </li>
+              <hr />
+            </div>
           );
         })}
       </ul>
