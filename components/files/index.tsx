@@ -5,16 +5,27 @@ import { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { contractAddress } from "../../config";
 import Upload from "./upload";
+import { useRouter } from "next/router";
+import { FaEye, FaKey, FaTrash, FaEyeSlash, FaFile } from "react-icons/fa";
 
 type File = {
   cid: string;
   url: string;
 };
 
+type Props = {
+  contractAddress: string;
+};
+
 const Files = () => {
   const [files, setFiles] = useState<File[]>([]);
 
+  useEffect(() => {
+    getCids();
+  }, []);
+
   const getCids = async () => {
+    console.log("contract: ", contractAddress);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -50,14 +61,16 @@ const Files = () => {
       publicKey,
       signedMessage
     );
-
-    const decrypted = await lighthouse.decryptFile(cid, keyObject.data.key);
+    
+    const fileType = "image/jpeg";
+    const decrypted = await lighthouse.decryptFile(cid, keyObject.data.key, fileType);
 
     const url = URL.createObjectURL(decrypted);
 
     const newFiles: File[] = [...files];
     newFiles[index].url = url;
     setFiles(newFiles);
+    console.log(files);
   };
 
   const removeFile = async (index: number) => {
@@ -70,10 +83,6 @@ const Files = () => {
     console.log(response);
   };
 
-  useEffect(() => {
-    getCids();
-  }, []);
-
   const renderList = () => {
     return (
       <ul className="w-full">
@@ -81,34 +90,35 @@ const Files = () => {
           return (
             <div>
               <li
-                className="my-1 flex flex-row gap-2 p-2 items-center justify-between"
+                className="my-1 flex flex-row p-2 items-center justify-between"
                 key={index}
               >
-                <p className="px-2 text-sm">{file.cid}</p>
+                <FaFile />
+                <p className="px-2 text-md text-[#2F3C7E]">{file.cid}</p>
                 <div className="flex flex-row gap-2">
                   <button
-                    className="bg-purple-300 rounded p-2 text-sm"
+                    className="border border-[#2F3C7E] rounded p-2 text-sm hover:bg-[#2F3C7E] hover:text-[#FBEAEB]"
                     onClick={() => decrypt(file.cid, index)}
                   >
-                    Decrypt
+                    <FaKey />
                   </button>
                   <a href={file.url} target="_blank">
                     <button
-                      className="bg-pink-300 rounded p-2 text-sm"
+                      className={file.url ? "border border-[#2F3C7E] rounded p-2 text-sm hover:bg-[#2F3C7E] hover:text-[#FBEAEB]" : "p-2 rounded text-sm border-gray-500"}
                       disabled={!file.url ? true : false}
                     >
-                      View
+                      {!file.url ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </a>
                   <button
-                    className="bg-orange-300 rounded p-2 text-sm"
+                    className="border border-[#2F3C7E] rounded p-2 text-sm hover:bg-[#2F3C7E] hover:text-[#FBEAEB]"
                     onClick={() => removeFile(index)}
                   >
-                    Remove
+                    <FaTrash />
                   </button>
                 </div>
               </li>
-              <hr />
+              <hr className="text-[#2F3C7E]" />
             </div>
           );
         })}
@@ -117,10 +127,10 @@ const Files = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-5 w-[750px] rounded-xl">
+    <div className="bg-white-100 p-5 w-[750px] rounded-xl border border-[#2F3C7E] border-[2px]">
       <div className="flex flex-row w-full justify-between p-2 items-center mb-4">
-        <p className="font-bold">Files:</p>
-        <button className="rounded p-2 bg-orange-200 text-sm">Add file</button>
+        <p className="text-lg font-[#2F3C7E]">Shared Files:</p>
+        <Upload />
       </div>
       {renderList()}
     </div>

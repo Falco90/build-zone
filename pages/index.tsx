@@ -1,13 +1,17 @@
-import Files from "../components/files";
-import Members from "../components/members";
+import Create from "../components/create";
+import Header from "../components/header";
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-3xl">Safe Build Zone</h1>
-      <div className="flex flex-row gap-10">
-        <Files />
-        <Members />
+      <Header />
+      <div className="flex flex-col items-center">
+        <p>
+          Welcome to Safe Build Zone. Where you can create a secure zone for
+          sharing encrypted files with your fellow builders, artists, DAO
+          members etc.
+        </p>
+        <Create />
       </div>
     </div>
   );

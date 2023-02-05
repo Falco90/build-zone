@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import contractABI from "../../abis/contractABI.json";
-import { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { contractAddress } from "../../config";
+import { Popup } from "reactjs-popup";
+import { FaFileUpload } from "react-icons/fa";
 
 const Upload = () => {
   const addFile = async (cid: string) => {
@@ -32,11 +33,11 @@ const Upload = () => {
     };
   };
 
-//   const progressCallback = (progressData: any) => {
-//     let percentageDone =
-//       100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
-//     console.log(percentageDone);
-//   };
+  //   const progressCallback = (progressData: any) => {
+  //     let percentageDone =
+  //       100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
+  //     console.log(percentageDone);
+  //   };
 
   const deployEncrypted = async (e: any) => {
     console.log(process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY);
@@ -45,12 +46,12 @@ const Upload = () => {
       e,
       sig.publicKey,
       process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY!,
-      sig.signedMessage,
-    //   progressCallback
+      sig.signedMessage
+      //   progressCallback
     );
     console.log(response);
     applyAccessConditions(response.data.Hash);
-    addFile(response.data.Hash)
+    addFile(response.data.Hash);
   };
 
   const applyAccessConditions = async (cid: string) => {
@@ -85,21 +86,40 @@ const Upload = () => {
   };
 
   return (
-    <div className="flex flex-row bg-white">
-        <p>Upload encrypted file:</p>
-      <input
-        className="form-control
+    <div className="flex flex-row">
+      <Popup
+        trigger={
+          <button className="border bg-[#2F3C7E] text-[#FBEAEB] rounded p-2 text-xl hover:bg-[#2F3C7E] hover:text-[#FBEAEB]">
+            <FaFileUpload />
+          </button>
+        }
+        position="center center"
+        modal
+      >
+        <div className="bg-[#2F3C7E] text-[#FBEAEB] rounded-lg p-8 flex flex-col text-center w-[600px] items-center">
+          {/* <p className="mb-2 text-md">Upload encrypted file:</p> */}
+          <p className="mb-4">
+            Choose a file to upload. This file will be encrypted and can only be
+            decrypted by members of this zone.
+          </p>
+          <input
+            className="form-control
           block
           w-full
-        text-sm
-          text-gray-700
+          text-sm
+          text-black
           rounded
           transition
           ease-in-out
-          m-0"
-        onChange={(e) => deployEncrypted(e)}
-        type="file"
-      />
+          bg-white
+          p-2
+          m-0
+          w-[300px]"
+            onChange={(e) => deployEncrypted(e)}
+            type="file"
+          />
+        </div>
+      </Popup>
     </div>
   );
 };
