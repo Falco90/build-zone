@@ -94,7 +94,7 @@ const Members = () => {
               They will be able to decrypt any files that are shared within this
               Zone until the member is removed.
             </p>
-            <h2 className="mb-2 text-sm">Enter ETH address:</h2>
+            <h2 className="mb-2 text-sm">Enter Ethereum address:</h2>
             <input
               type="text"
               value={newMember}
