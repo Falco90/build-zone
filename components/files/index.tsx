@@ -85,7 +85,7 @@ const Files = () => {
 
   const renderList = () => {
     return (
-      <ul className="w-full">
+      <ul className="w-full font-mono-general">
         {files.map((file, index) => {
           return (
             <div>
@@ -127,9 +127,9 @@ const Files = () => {
   };
 
   return (
-    <div className="bg-white-100 p-5 w-[750px] rounded-xl border border-[#2F3C7E] border-[2px]">
+    <div className="bg-white-100 p-5 w-[750px] rounded-xl border-double border-[#2F3C7E] border-4">
       <div className="flex flex-row w-full justify-between p-2 items-center mb-4">
-        <p className="text-lg font-[#2F3C7E]">Shared Files:</p>
+        <p className="text-lg font-[#2F3C7E] font-mono-general">Files:</p>
         <Upload />
       </div>
       {renderList()}

@@ -48,7 +48,7 @@ const Members = () => {
 
   const renderMembers = () => {
     return (
-      <ul>
+      <ul className="font-mono-general text-sm">
         {members!.map((member, index) => {
           return (
             <div>
@@ -74,9 +74,9 @@ const Members = () => {
   };
 
   return (
-    <div className="border border-[#2F3C7E] border-[2px] p-5 rounded-xl w-[500px]">
+    <div className="border-double border-4 border-[#2F3C7E] p-5 rounded-xl w-[500px]">
       <div className="flex flex-row gap-4 justify-between mb-8 items-center py-2">
-        <h3 className="text-lg">Members:</h3>
+        <h3 className="font-mono-general text-lg">Members:</h3>
         <Popup
           trigger={
             <button className="border bg-[#2F3C7E] text-[#FBEAEB] rounded p-2 text-xl hover:bg-[#2F3C7E] hover:text-[#FBEAEB]">
