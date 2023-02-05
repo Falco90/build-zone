@@ -96,7 +96,7 @@ const Upload = () => {
         position="center center"
         modal
       >
-        <div className="bg-[#2F3C7E] text-[#FBEAEB] rounded-lg p-8 flex flex-col text-center w-[600px] items-center">
+        <div className="bg-[#2F3C7E] text-[#FBEAEB] rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
           {/* <p className="mb-2 text-md">Upload encrypted file:</p> */}
           <p className="mb-4">
             Choose a file to upload. This file will be encrypted and can only be
