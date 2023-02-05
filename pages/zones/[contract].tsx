@@ -3,6 +3,7 @@ import Members from "../../components/members";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Header from "../../components/header";
+import Footer from "../../components/footer";
 
 export default function Zone() {
   const [contractAddress, setContractAddress] = useState<string>();
@@ -10,17 +11,20 @@ export default function Zone() {
 
   useEffect(() => {
     console.log(router);
-    setContractAddress(router.asPath.substring(router.asPath.lastIndexOf("/") + 1));
-    console.log("PARENT: ", contractAddress)
+    setContractAddress(
+      router.asPath.substring(router.asPath.lastIndexOf("/") + 1)
+    );
+    console.log("PARENT: ", contractAddress);
   }, []);
 
   return (
     <div className="flex flex-col items-center">
-        <Header />
+      <Header />
       <div className="flex flex-row gap-10">
-        <Files  />
+        <Files />
         <Members />
       </div>
+      <Footer />
     </div>
   );
 }

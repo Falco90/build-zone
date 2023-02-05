@@ -4,7 +4,7 @@ import contractABI from "../../abis/contractABI.json";
 import { useEffect, useState } from "react";
 import { contractAddress, owner } from "../../config";
 import { Popup } from "reactjs-popup";
-import { FaUser, FaUserTimes, FaUserPlus } from "react-icons/fa";
+import { FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa";
 
 const Members = () => {
   const [members, setMembers] = useState<string[]>([]);
@@ -62,7 +62,7 @@ const Members = () => {
                   className="border border-[#2F3C7E] rounded p-2 text-sm hover:bg-[#2F3C7E] hover:text-[#FBEAEB]"
                   onClick={() => removeMember(member, index)}
                 >
-                  <FaUserTimes />
+                  <FaUserMinus />
                 </button>
               </li>
               <hr />
@@ -86,19 +86,27 @@ const Members = () => {
           position="center center"
           modal
         >
-          <div className="bg-white rounded-lg p-8 flex flex-col">
-            <h2>Enter address:</h2>
+          <div className="bg-[#2F3C7E] text-white rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
+            <h2 className="text-lg">Add Member</h2>
+            <hr className="border border-white w-full my-4"/>
+            <p className="mb-6 text-left">
+              The member's address will be added to this Zone's smart contract.
+              They will be able to decrypt any files that are shared within this
+              Zone until the member is removed.
+            </p>
+            <h2 className="mb-2 text-sm">Enter ETH address:</h2>
             <input
               type="text"
               value={newMember}
               onChange={(e) => setNewMember(e.target.value)}
+              className="text-black p-2 my-2"
             />
             {!isLoading ? (
               <button
-                className="bg-green-200 p-2 rounded mt-4"
+                className="border border-2 bg-white font-bold text-[#2F3C7E] text-sm p-2 rounded mt-4 hover:bg-[#2F3C7E] hover:text-white hover:border-[#fff]"
                 onClick={() => addMember()}
               >
-                Add Member
+                Submit
               </button>
             ) : (
               "loading"

@@ -97,10 +97,19 @@ const Upload = () => {
         modal
       >
         <div className="bg-[#2F3C7E] text-[#FBEAEB] rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
-          {/* <p className="mb-2 text-md">Upload encrypted file:</p> */}
-          <p className="mb-4">
-            Choose a file to upload. This file will be encrypted and can only be
-            decrypted by members of this zone.
+          <h2 className="text-lg">Add File</h2>
+          <hr className="border border-white w-full my-4" />
+          <p className="mb-4 text-left">
+            Choose a file to upload.This file will be encrypted and can only be decrypted by members of
+            this Zone. This is a 3 step process:
+          </p>
+          <ul className="text-left my-2">
+            <li>1. Upload file with encryption</li>
+            <li>2. Add access controls for this Zone</li>
+            <li>3. Add CID to this Zone's smart contract</li>
+          </ul>
+          <p>
+
           </p>
           <input
             className="form-control
@@ -114,7 +123,8 @@ const Upload = () => {
           bg-white
           p-2
           m-0
-          w-[300px]"
+          w-[300px]
+          mt-6"
             onChange={(e) => deployEncrypted(e)}
             type="file"
           />
