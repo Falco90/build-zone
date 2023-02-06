@@ -3,25 +3,21 @@ import Web3Modal from "web3modal";
 import contractABI from "../../abis/contractABI.json";
 import { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
-// import { contractAddress } from "../../config";
 import Upload from "./upload";
-import { useRouter } from "next/router";
 import { FaEye, FaKey, FaTrash, FaEyeSlash, FaFile } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type File = {
   cid: string;
   url: string;
 };
 
-type Props = {
-  contractAddress: string;
-};
-
 const Files = ({ contractAddress }) => {
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    console.log("FILES: ", contractAddress)
+    console.log("FILES: ", contractAddress);
     getCids();
   }, []);
 
@@ -64,18 +60,23 @@ const Files = ({ contractAddress }) => {
     );
 
     const fileType = "image/jpeg";
-    const decrypted = await lighthouse.decryptFile(
-      cid,
-      keyObject.data.key,
-      fileType
-    );
+    try {
+      const decrypted = await lighthouse.decryptFile(
+        cid,
+        keyObject.data.key,
+        fileType
+      );
 
-    const url = URL.createObjectURL(decrypted);
+      const url = URL.createObjectURL(decrypted);
 
-    const newFiles: File[] = [...files];
-    newFiles[index].url = url;
-    setFiles(newFiles);
-    console.log(files);
+      const newFiles: File[] = [...files];
+      newFiles[index].url = url;
+      setFiles(newFiles);
+      toast.success("Succes");
+    } catch (error) {
+      console.log("Error", error);
+      toast.warning("failed");
+    }
   };
 
   const removeFile = async (index: number) => {
@@ -139,7 +140,7 @@ const Files = ({ contractAddress }) => {
     <div className="bg-white-100 p-5 w-[750px] rounded-xl border-double border-[#2F3C7E] border-4">
       <div className="flex flex-row w-full justify-between p-2 items-center mb-4">
         <p className="text-lg font-[#2F3C7E] font-mono-general">Files:</p>
-        <Upload contractAddress={contractAddress}/>
+        <Upload contractAddress={contractAddress} />
       </div>
       {renderList()}
     </div>
