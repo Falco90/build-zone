@@ -2,11 +2,11 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import contractABI from "../../abis/contractABI.json";
 import { useEffect, useState } from "react";
-import { contractAddress, owner } from "../../config";
+// import { contractAddress, owner } from "../../config";
 import { Popup } from "reactjs-popup";
 import { FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa";
 
-const Members = () => {
+const Members = ({contractAddress}) => {
   const [members, setMembers] = useState<string[]>([]);
   const [newMember, setNewMember] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);

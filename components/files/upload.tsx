@@ -2,11 +2,10 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import contractABI from "../../abis/contractABI.json";
 import lighthouse from "@lighthouse-web3/sdk";
-import { contractAddress } from "../../config";
 import { Popup } from "reactjs-popup";
 import { FaFileUpload } from "react-icons/fa";
 
-const Upload = () => {
+const Upload = ({contractAddress}) => {
   const addFile = async (cid: string) => {
     console.log(cid);
     const web3Modal = new Web3Modal();
