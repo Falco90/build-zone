@@ -13,19 +13,19 @@ export default function Home() {
           </h1>
           <p className="mb-8">
             Here you can create a secure zone for sharing encrypted files with
-            your fellow builders, artists, DAO members etc. No databases,
-            everything is fully decentralized powered by Filecoin and
-            Lighthouse.
+            your fellow builders, artists, DAO members etcetera. No databases or
+            centralized services, everything is fully decentralized powered by
+            Filecoin and Lighthouse.storage.
           </p>
           <h2 className="text-xl mb-4 text-[#2F3C7E]">This is how it works:</h2>
           <p className="mb-4">
-            By creating a new Zone a smart contract will be deployed where you
-            can add people to be members of the Zone. Only members on the smart
-            contract can decrypt the files that are shared in the Zone. This is
-            all done through the lighthouse.storage SDK without the need for any
-            centralized service provider.
+            For each Zone a new smart contract will be deployed where you as the
+            owner can add members to collaborate with. Members can add encrypted
+            files to the Zone, which can only be decrypted by other members on the smart contract.
           </p>
-          <h2 className="text-xl mt-4 mb-6 text-[#2F3C7E]">Happy file sharing!</h2>
+          <h2 className="text-xl mt-4 mb-6 text-[#2F3C7E]">
+            Happy file sharing!
+          </h2>
         </div>
         <Create />
       </div>
