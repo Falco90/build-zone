@@ -63,7 +63,7 @@ const Create = () => {
     <div>
       <div className="bg-white-100 p-5 w-[600px] rounded-xl border-double border-[#2F3C7E] border-4 font-mono-general">
         <div className="flex flex-row w-full justify-between p-2 items-center mb-4">
-          <p>My Zones:</p>
+          <p className="text-lg font-mono-general">My Zones:</p>
           <button
             className="border bg-[#2F3C7E] text-[#FBEAEB] rounded p-2 text-xl hover:bg-[#2F3C7E] hover:text-[#FBEAEB]"
             onClick={() => create()}

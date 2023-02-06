@@ -95,7 +95,7 @@ const Upload = ({contractAddress}) => {
         position="center center"
         modal
       >
-        <div className="bg-[#2F3C7E] text-[#FBEAEB] rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
+        <div className="bg-[#2F3C7E] text-[#fff] rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
           <h2 className="text-lg">Add File</h2>
           <hr className="border border-white w-full my-4" />
           <p className="mb-4 text-left">
