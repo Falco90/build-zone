@@ -38,11 +38,8 @@ const Create = () => {
       <ul className="w-full font-mono-general">
         {zones.map((zone, index) => {
           return (
-            <div>
-              <li
-                className="my-1 flex flex-row p-2 items-center justify-between"
-                key={index}
-              >
+            <div key={index}>
+              <li className="my-1 flex flex-row p-2 items-center justify-between">
                 <FaDotCircle className="text-[#2F3C7E]" />
                 <p>{zone}</p>
                 <a href={`/zones/${zone}`}>

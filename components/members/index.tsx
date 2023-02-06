@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Popup } from "reactjs-popup";
 import { FaUser, FaUserMinus, FaUserPlus } from "react-icons/fa";
 
-const Members = ({contractAddress}) => {
+const Members = ({ contractAddress }) => {
   const [members, setMembers] = useState<string[]>([]);
   const [newMember, setNewMember] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,11 +51,8 @@ const Members = ({contractAddress}) => {
       <ul className="font-mono-general text-sm">
         {members!.map((member, index) => {
           return (
-            <div>
-              <li
-                key={index}
-                className="flex flex-row gap-2 items-center my-2 justify-between"
-              >
+            <div key={index}>
+              <li className="flex flex-row gap-2 items-center my-2 justify-between">
                 <FaUser />
                 <p className="px-2">{member}</p>
                 <button
@@ -88,7 +85,7 @@ const Members = ({contractAddress}) => {
         >
           <div className="bg-[#2F3C7E] text-white rounded-lg p-8 flex flex-col text-center w-[600px] items-center font-mono-general">
             <h2 className="text-lg">Add Member</h2>
-            <hr className="border border-white w-full my-4"/>
+            <hr className="border border-white w-full my-4" />
             <p className="mb-6 text-left">
               The member's address will be added to this Zone's smart contract.
               They will be able to decrypt any files that are shared within this

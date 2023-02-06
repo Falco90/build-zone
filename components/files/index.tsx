@@ -94,10 +94,10 @@ const Files = ({ contractAddress }) => {
       <ul className="w-full font-mono-general">
         {files.map((file, index) => {
           return (
-            <div>
+            <div key={index}>
               <li
                 className="my-1 flex flex-row p-2 items-center justify-between"
-                key={index}
+                
               >
                 <FaFile />
                 <p className="px-2 text-md text-[#2F3C7E]">{file.cid}</p>
